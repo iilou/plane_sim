@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="gl-matrix-min.js"></script>
+    <script defer src="index.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #dot{
+            position:absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            left:700px;
+            top:340px;
+        }
+        #cockpit{
+            position:absolute;
+            width: 1400px;
+            height: 680px;
+            background-image: url("./textures/cockpit.png");
+            background-size: 100% 80%;
+            background-position: 50% 100%;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div id="cockpit"></div>
+    <div id="dot"></div>
+    <canvas class="canvas" width="1400" height="680"></canvas>
+</body>
+</html>
