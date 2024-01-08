@@ -10,7 +10,14 @@
         body {
             margin: 0;
             padding: 0;
+            color:#67ff67;
+            font-size:24px;
         }
+        /* .container{
+            width:1400px;
+            height:680px;
+            margin:auto;
+        } */
         #dot{
             position:absolute;
             width: 10px;
@@ -29,11 +36,99 @@
             background-position: 50% 100%;
             background-repeat: no-repeat;
         }
+        #cam1{
+            position:absolute;
+            width:300px;
+            height:140px;
+            left:392px;
+            top:490px;
+            display:grid;
+            margin:auto;
+            grid-auto-flow: column;
+            grid-template-columns: 130px auto;
+            grid-template-rows: 55px 32px 32px;
+            background-color: black;
+        }
+        #cam1 div{
+            width:fit-content;
+            margin:auto;
+            margin-left:20px;
+            margin-bottom:0;
+        }
+        #cam2{
+            position:absolute;
+            width:300px;
+            height:140px;
+            left:712px;
+            top:490px;
+            display:grid;
+            margin:auto;
+            grid-auto-flow: column;
+            grid-template-columns: 130px auto;
+            grid-template-rows: 55px 32px 32px;
+            background-color: black;
+        }
+        #cam2 div{
+            width:fit-content;
+            margin:auto;
+            margin-left:20px;
+            margin-bottom:0;
+        }
+        #cam3{
+            position:absolute;
+            width:230px;
+            height:200px;
+            left:292px;
+            top:295px;
+            background-color: black;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+        }
+        #cam4{
+            position:absolute;
+            width:230px;
+            height:200px;
+            left:892px;
+            top:295px;
+            background-color: black;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+        }
     </style>
 </head>
 <body>
-    <div id="cockpit"></div>
-    <div id="dot"></div>
-    <canvas class="canvas" width="1400" height="680"></canvas>
+    <div class="container">
+        <div id="cam1">
+            <div class="posx">x: 1</div>
+            <div class="posy">y: 1</div>
+            <div class="posz">z: 1</div>
+            <div class="velx">vx: 1</div>
+            <div class="vely">vy: 1</div>
+            <div class="velz">vz: 1</div>
+        </div>
+        <div id="cam2">
+            <div class="ax">θx: </div>
+            <div class="ay">θy: </div>
+            <div class="az">θz: </div>
+            <div class="omx">ωx: </div>
+            <div class="omy">ωy: </div>
+            <div class="omz">ωz: </div>
+        </div>   
+        <div id="cam3">
+            <div class="thrustl">Thrust</div>
+            <div class="thrust">25</div>
+        </div>
+        <div id="cam4">
+            <div class="distl">Target</div>
+            <div class="dist">1554m</div>
+        </div>
+        <div id="cockpit"></div>
+        <div id="dot"></div>
+        <canvas class="canvas" width="1400" height="680"></canvas>
+    </div>
 </body>
 </html>

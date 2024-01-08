@@ -60,40 +60,132 @@ function tower(arr, l, w, h, x, y, z){
     return arr;
 }
 
-function floor(arr, s, ds){
+function towerTex(arr, c, c2=c){
+    for(let i = 0; i < 6; i++){
+        // arr.push(0.5,0);
+        // arr.push(1,0);
+        // arr.push(0.5,0.5);
+
+        // arr.push(0.5,0);
+        // arr.push(0.5,0.5);
+        // arr.push(1,0.5);
+        arr.push(...c);
+        arr.push(...c);
+        arr.push(...c);
+        arr.push(...c);
+        arr.push(...c);
+        arr.push(...c);
+    }
+
+    return arr;
+}
+
+function circle(arr, r, x, y, z, stacks, sectors){
+    
+    let vStep = 2*Math.PI/stacks; //-pi to pi
+    let hStep = 2*Math.PI/sectors; //0 to 2pi
+
+    let vertex = [];
+
+    for(let i = 1; i < stacks; i++) {
+        for(let j = 0; j < sectors; j++) {
+            theta = vStep*i;
+            phi = hStep*j;
+
+            vertex.push(x + r*Math.cos(theta)*Math.cos(phi));
+            vertex.push(y + r*Math.cos(theta)*Math.sin(phi));
+            vertex.push(z + r*Math.sin(theta));
+        }
+    }
+
+    return arr;
+}
+
+function floor(arr, s, ds, y=0){
     for(var i = -s; i <= s; i+=ds){
         for(var j = -s; j <= s; j+=ds){
-            arr.push(i, 0, j);
-            arr.push(i+ds, 0, j);
-            arr.push(i, 0, j+ds);
-            arr.push(i+ds, 0, j+ds);
-            arr.push(i, 0, j+ds);
-            arr.push(i+ds, 0, j);
+            arr.push(i, y, j);              //left bot
+            arr.push(i+ds, y, j);           //right bot
+            arr.push(i, y, j+ds);           //left top
+            arr.push(i+ds, y, j+ds);        //right top
+            arr.push(i, y, j+ds);           //left top
+            arr.push(i+ds, y, j);           //right bot
         }
     }
     return arr;
 }
 
+function floorTex(arr, s, ds, noise, noiseCol){
+    let c = 0;
+    for(var i = 0; i <= 2*s; i+=ds){
+        for(var j = 0; j <= 2*s; j+=ds){
+            // arr.push(i/(4*s),       j/(4*s)           +0.0);  
+            // arr.push((i+ds)/(4*s),  j/(4*s)           +0.0);
+            // arr.push(i/(4*s),       (j+ds)/(4*s)      +0.0);
+
+            // arr.push((i+ds)/(4*s),  (j+ds)/(4*s)           +0.0);
+            // arr.push(i/(4*s),       (j+ds)/(4*s)      +0.0);
+            // arr.push((i+ds)/(4*s),  j/(4*s)      +0.0);
+
+            // c = Math.random()*0.08;
+            // c = Math.random()>0.995?0.94:Math.random()*0.05;
+            c = Math.random()>noise?noiseCol:[0.02,0.02,0.02];
+            arr.push(...c);
+            arr.push(...c);
+            arr.push(...c);
+
+            arr.push(...c);
+            arr.push(...c);
+            arr.push(...c);
+        }
+    }
+
+    return arr;
+}
+
+// function loadTexture(url) {
+//     const texture = gl.createTexture();
+//     const image = new Image();
+
+//     image.onload = e => {
+//         gl.bindTexture(gl.TEXTURE_2D, texture);
+        
+//         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+//         gl.generateMipmap(gl.TEXTURE_2D);
+//     };
+
+//     image.src = url;
+//     return texture;
+// }
+
 var vertexData = [];
+var colorData = [];
 
-vertexData = tower(vertexData, 100, 100, 1000, -110, 490, -1750);
-vertexData = tower(vertexData, 100, 100, 1000, 110, 490, -1750);
-vertexData = floor(vertexData, 10000, 40);
+vertexData = floor(vertexData, 1000, 2.5);
+colorData = floorTex(colorData, 1000, 2.5, 0.9, [0.95, 0.95, 0.2]);
 
-// const tower1 = tower(100, 100, 1000, -110, 490, -1750);
-// const tower2 = tower(100, 100, 1000, 110, 490, -1750);
-// const floor1 = floor(10000, 40);
+vertexData = floor(vertexData, 1000, 2.5, 200);
+colorData = floorTex(colorData, 1000, 2.5, 0.995, [0.94, 0.94, 0.94]);
 
-// const vertexData = tower1.concat(tower2, floor1);
+for(let i = 0; i < 140; i++){
+    vertexData = tower(vertexData, 10, 10, 400, Math.random()*1600-800, 200, Math.random()*1600-800);
+    colorData = towerTex(colorData, [0.9, 0.2, 0.2]);
+}
+
+// vertexData = tower(vertexData, 20, 20, 100, 400, 100, 0);
+// vertexData = tower(vertexData, 20, 20, 100, 400, 100, 100);
+// vertexData = tower(vertexData, 20, 20, 100, 400, 100, 200);
+// vertexData = tower(vertexData, 20, 20, 100, 300, 100, 0);
+
+// colorData = towerTex(colorData, [0.9, 0.2, 0.2]);
+// colorData = towerTex(colorData, [0.9, 0.2, 0.2]);
+// colorData = towerTex(colorData, [0.9, 0.2, 0.2]);
+// colorData = towerTex(colorData, [0.9, 0.2, 0.2]);
 
 const positionBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
-
-const colorData = [];
-for(let face = 0; face < vertexData.length / 3; face++) {
-    colorData.push(0.5, 0.5, 0.5, 1);
-}
 
 const colorBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
@@ -107,6 +199,7 @@ precision mediump float;
 
 attribute vec3 position;
 attribute vec3 color;
+
 varying vec3 vColor;
 
 uniform mat4 matrix;
@@ -156,15 +249,17 @@ gl.enable(gl.DEPTH_TEST);
 
 
 
-document.querySelector('body').appendChild(document.createElement("div1"));
-document.querySelector('div1').innerHTML = "";
-document.querySelector('body').appendChild(document.createElement("div2"));
-document.querySelector('div2').innerHTML = "";
+// document.querySelector('body').appendChild(document.createElement("div1"));
+// document.querySelector('div1').innerHTML = "";
+// document.querySelector('body').appendChild(document.createElement("div2"));
+// document.querySelector('div2').innerHTML = "";
 
 
 const uniformLocations = {
     matrix: gl.getUniformLocation(program, `matrix`),
 };
+
+// gl.uniform1i(uniformLocations.textureID, 0);
 
 const zero = (v, lim) => {
     for(var i = 0; i < v.length; i++){
@@ -232,13 +327,13 @@ const rotation3D = (v, theta_x, theta_y, theta_z) => {
 
 
 
-
+var position = [0,0,0];
 
 var thrust = 0;
 var weight = 1;
 var drag = 0;
 
-var velocity = [0,0,10];
+var velocity = [0,0,1];
 var sumForce = [0,0,0];
 
 var dive = 0;
@@ -279,11 +374,40 @@ const finMatrix = mat4.create();
 
 // mat4.translate(modelMatrix, modelMatrix, [-1.5, 0, -2]);
 
-mat4.translate(viewMatrix, viewMatrix, [-3, 97, 1]);
+mat4.translate(viewMatrix, viewMatrix, [-3, 10, 1]);
 mat4.invert(viewMatrix, viewMatrix);
 
+const displays = [
+    document.querySelector('.posx'),
+    document.querySelector('.posy'),
+    document.querySelector('.posz'),
+    document.querySelector('.velx'),
+    document.querySelector('.vely'),
+    document.querySelector('.velz'),
+    document.querySelector('.ax'),
+    document.querySelector('.ay'),
+    document.querySelector('.az'),
+    document.querySelector('.omx'),
+    document.querySelector('.omy'),
+    document.querySelector('.omz'),
+    document.querySelector('.thrust'),
+    document.querySelector('.dist'),  
+]
+
+const round = (n, d) => {
+    return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+}
+
 const translate = (v) => {
+    position = sumVectors(position, v);
     mat4.translate(modelMatrix, modelMatrix, v);
+
+    displays[0].innerHTML = "x: " + round(position[0], 1);
+    displays[1].innerHTML = "y: " + round(position[1], 1);
+    displays[2].innerHTML = "z: " + round(position[2], 1);
+    displays[3].innerHTML = "vx: " + round(velocity[0], 1);
+    displays[4].innerHTML = "vy: " + round(velocity[1], 1);
+    displays[5].innerHTML = "vz: " + round(velocity[2], 1);
 }
 
 function animate() {
@@ -317,6 +441,17 @@ function animate() {
 
     q = quat.fromEuler(q, dive*(180/Math.PI), -koel*(180/Math.PI), -spin*(180/Math.PI));
     mat4.fromQuat(rotationMatrix, q);
+
+    displays[6].innerHTML = "θx: " + round(dive, 2);
+    displays[7].innerHTML = "θy: " + round(koel, 2);
+    displays[8].innerHTML = "θz: " + round(spin, 2);
+
+    displays[9].innerHTML = "ωx: " + round(angularVelocity[0],  2);
+    displays[10].innerHTML ="ωy: " + round( angularVelocity[1], 2);
+    displays[11].innerHTML ="ωz: " + round( angularVelocity[2], 2);
+
+    displays[12].innerHTML = round(thrust, 3);
+    displays[13].innerHTML = round(mag(sumVectors([position[0], 0, position[2]], [-110, 0, -1750])), 3);
     // mat4.rotateZ(rotationMatrix, rotationBase, -spin);
     // mat4.rotateX(rotationMatrix, rotationMatrix, -dive);
     // mat4.rotateY(rotationMatrix, rotationMatrix, -koel);
@@ -332,9 +467,6 @@ function animate() {
     velocity = sumVectors(velocity, sumForce); // add acceleration to velocity
 
     translate(velocity);
-    
-    document.querySelector('div1').innerHTML = spin*180/Math.PI  + " " + velocity[2] + " " + thrust + " " + weight;
-    document.querySelector('div2').innerHTML = "";
 
     mat4.multiply(mvMatrix, viewMatrix, modelMatrix);
     mat4.multiply(mvpMatrix, rotationMatrix, mvMatrix);
@@ -347,23 +479,30 @@ function animate() {
 
     gl.uniformMatrix4fv(uniformLocations.matrix, false, finMatrix);
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-    gl.clearColor(0.4, 0.4, 0.8, 1);
+    gl.clearColor(0.01,0.01, 0.01, 1);
     gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+}
+
+function animate2(){
+    requestAnimationFrame(animate2);
+    
+
 }
 
 document.addEventListener('keydown', (e) => {
     if(e.key == 'd'){
-        thrust = Math.max(thrust + 0.001, 0.3);
+        // thrust = Math.min(thrust + 0.001, 0.02);
+        thrust = 0.01
     }
     if(e.key == 'q'){
         velocity = [0,0,1];
     }
     if(e.key == 's'){
-        angularAcceleration[1] = 0.0019;
+        angularAcceleration[1] = 0.0010;
         angularAcceleration[2] = 0.0004;
     }
     if(e.key == 'f'){
-        angularAcceleration[1] = -0.0019;
+        angularAcceleration[1] = -0.0010;
         angularAcceleration[2] = -0.0004;
     }
     if(e.key == ' '){
@@ -376,7 +515,7 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('keyup', (e) => {
     if(e.key == 'd'){
-        thrust = 0.2;
+        thrust = 0.005;
     }
     if(e.key == 's'){
         angularAcceleration[1] = 0;
